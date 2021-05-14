@@ -6,7 +6,7 @@
 
 ### how to use
 
-just clone this project to your project and import the data structure you need and enjoy
+just clone this project to your project and import the data structure you need then,  enjoy
 
 
 
