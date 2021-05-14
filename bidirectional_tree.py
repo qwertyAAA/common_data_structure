@@ -6,7 +6,9 @@ class Node(object):
     """
     the Node object of BidirectionalTree
     """
-    def __init__(self, parent: Optional[Any] = None, data: Optional[Any] = None, children: Optional[List[Any]] = None) -> None:
+
+    def __init__(self, parent: Optional[Any] = None, data: Optional[Any] = None,
+                 children: Optional[List[Any]] = None) -> None:
         self.parent = parent
         self.data = data
         self.children = children if children else list()
@@ -67,6 +69,8 @@ class BidirectionalTree(object):
             flag = True
             for k, v in target.items():
                 flag = flag and getattr(current_node, k) == v
+                if not flag:
+                    break
             if flag:
                 return current_node
             if current_node.children:
@@ -79,6 +83,7 @@ class BidirectionalTree(object):
         traverse the whole tree depth first
         :return: Generator
         """
+
         def traverse(current_node: Node):
             yield current_node
             for child in current_node.children:
@@ -86,6 +91,35 @@ class BidirectionalTree(object):
                     yield item
 
         return traverse(self.root_node)
+
+    def depth_first_search(self, target: Dict) -> Optional[Node]:
+        """
+        execute depth first search
+        :param target: target, The filter condition is composed of the attribute name of Node object and the corresponding value
+            target = {
+                "data": "hello world",
+                "parent": parent_node,
+                "children": children_nodes
+            }
+            target = {
+                "data": "hello world",
+            }
+        :return: Node
+        """
+
+        def search(current_node: Node):
+            flag = True
+            for k, v in target.items():
+                flag = flag and getattr(current_node, k) == v
+                if not flag:
+                    break
+            if flag:
+                return current_node
+            for child in current_node.children:
+                ret = search(child)
+                if ret:
+                    return ret
+        return search(self.root_node)
 
 
 if __name__ == '__main__':
@@ -120,12 +154,12 @@ if __name__ == '__main__':
             return
         # path_list = os.path.split(reversed_path)
         node = Node(data=reversed_path_deque.pop())
-        temp_node = bt.breadth_first_search({
+        temp_node = bt.depth_first_search({
             "data": node.data,
             "parent": parent
         })
         if not temp_node:
-            temp_parent = bt.breadth_first_search({
+            temp_parent = bt.depth_first_search({
                 "data": parent.data,
                 "parent": parent.parent
             })
